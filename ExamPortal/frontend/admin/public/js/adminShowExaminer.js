@@ -1,3 +1,4 @@
+
 function deleteexaminer(id)
 {
   $("#modelid").attr('id',id)
@@ -65,7 +66,6 @@ $(document).ready(function () {
         }
       ),
       success: function (recent) {
-       // display(recent);
         window.location.replace("adminShowExaminer.html")
       },
       error: function () {
