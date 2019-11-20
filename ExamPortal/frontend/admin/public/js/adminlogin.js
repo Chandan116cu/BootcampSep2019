@@ -5,7 +5,7 @@ $(document).ready(function(){
         var pwd=document.getElementById("password").value;
         console.log(em);
         console.log(pwd);
-        $.ajax("http://127.0.0.1:"+localStorage.getItem('server-port')+"/adminlogin",{
+        $.ajax("http://localhost:"+localStorage.getItem('server-port')+"/adminlogin",{
         type:"POST",
         dataType:"json",
         contentType:"application/json",

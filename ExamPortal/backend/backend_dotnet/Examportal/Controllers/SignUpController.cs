@@ -37,26 +37,6 @@ namespace Examportal.Controllers
             
         }
 
-        [Route("/examiner")]
-        [HttpPost]
-        public IActionResult Examiner([FromBody] Users value)
-        {
-            var data = (from c in db.Users where c.Email == value.Email select c).FirstOrDefault();
-            if (data == null)
-            {
-                value.CreatedBy = "Examiner";
-                value.AccountType = "Examiner";
-                value.CreatedDate = DateTime.Now;
-                value.Password = Bcrypt.BCrypt.HashPassword(value.Password);
-                db.Users.Add(value);
-                db.SaveChanges();
-                return Ok(true);
-            }
-            else
-            {
-                return BadRequest();
-            }
-
-        }
+      
     }
 }

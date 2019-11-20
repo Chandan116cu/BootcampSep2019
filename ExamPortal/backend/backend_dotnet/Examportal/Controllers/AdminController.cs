@@ -20,7 +20,14 @@ namespace Examportal.Controllers
         [HttpGet]
         public IActionResult display()
         {
-            var itm = db.Users.Where(e => e.AccountType == "Examiner").Select(a => new { a.Email, _id = a.Email, a.Name, a.CreatedDate });
+            var itm = db.Users.Where(e => e.AccountType == "Examiner").ToList().
+                Select(a =>new AdminCustomModel{  CreatedDate = a.CreatedDate?.ToString("dd MMMM yyyy"),_id = a.Email,Name = a.Name ,Email = a.Email});
+            
+            //var b = Convert.ToString(itm[0].CreatedDate);
+            //var c = b.ToString("dddd, dd MMMM yyyy");
+          
+            //var itm = (from data in db.Users select data.CreatedDate).ToList().Select(d => d.ToString("yyyy-MM-dd"));
+            //kvar selectQuery = from add in db.Users.AsEnumerable().Select(d=> );
             return Ok(itm);
         }
 
@@ -40,10 +47,10 @@ namespace Examportal.Controllers
             {
                 return Ok(new { message = "user already exist" });
             }
-            else if (data == null)
+             if (data == null)
             {
                 value.Password = Bcrypt.BCrypt.HashPassword(value.Password);
-                value.CreatedDate = DateTime.Now;
+                value.CreatedDate =DateTime.Now;
                 db.Users.Add(value);
                 db.SaveChanges();
                 return Ok(true);

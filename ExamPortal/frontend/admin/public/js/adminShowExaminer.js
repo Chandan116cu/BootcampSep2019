@@ -65,7 +65,7 @@ $(document).ready(function () {
         }
       ),
       success: function (recent) {
-        display(recent);
+       // display(recent);
         window.location.replace("adminShowExaminer.html")
       },
       error: function () {
