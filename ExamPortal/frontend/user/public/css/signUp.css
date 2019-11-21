@@ -99,7 +99,17 @@ form :nth-child(1) {
 }
 
 .mod {
+    display: none;
     position: absolute;
-    top: 90%;
+    top: 95%;
     left: 50%;
+}
+.cg{
+    animation: rotate 1.2s infinite;
+}
+@keyframes rotate{
+
+ 0%   {transform: rotateY(0deg);}
+ 50%{transform: rotateY(180deg);}
+ 100%{transform: rotateY(360deg);}
 }

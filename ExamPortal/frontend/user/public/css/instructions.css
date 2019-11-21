@@ -93,4 +93,7 @@ ul {
 
 #leftTime {
     color: red;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
 }

@@ -17,7 +17,7 @@ namespace Examportal.Models
         public string ModifiedBy { get; set; }
         public string Answer { get; set; }
 
+        public CandidateResult EmailNavigation { get; set; }
         public Questions IdNavigation { get; set; }
-        public CandidateResult TestCodeNavigation { get; set; }
     }
 }

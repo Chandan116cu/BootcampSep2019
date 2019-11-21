@@ -45,7 +45,7 @@ namespace Examportal.Handlers
                 status = CheckExisitingRightOption(checkedOption, value.QId, value.Code, email, updatedScore);
                 if (!status)
                 {
-                    answerDetails = AnswerDetailsObject(email,value.Code,value.QId,1,checkedOption);
+                    answerDetails = AnswerDetailsObject(email, value.Code, value.QId, 1, checkedOption);
                     db.CandidateAnswer.Add(answerDetails);
                     db.CandidateResult.Where(s => s.Email == email && s.TestCode == value.Code).ToList().ForEach(x => x.TotalScore = updatedScore);
                     db.SaveChanges();
@@ -61,7 +61,7 @@ namespace Examportal.Handlers
                 if (status[0].CorrectStatus == 0)
                 {
                     db.CandidateAnswer.Where(s => s.Email == email && s.TestCode == examCode && s.Id == Convert.ToInt16(QId)).ToList().ForEach(s => { s.CorrectStatus = 1; s.Answer = checkedOption; });
-                    db.CandidateResult.Where(s => s.Email == email && s.TestCode == examCode).ToList().ForEach(s=> s.TotalScore = updatedScore);
+                    db.CandidateResult.Where(s => s.Email == email && s.TestCode == examCode).ToList().ForEach(s => s.TotalScore = updatedScore);
                     db.SaveChanges();
                 }
                 return true;
@@ -82,6 +82,7 @@ namespace Examportal.Handlers
                 else
                 {
                     db.CandidateAnswer.Where(s => s.Email == email && s.TestCode == examCode && s.Id == Convert.ToInt16(QId)).ToList().ForEach(toUpdate => { toUpdate.CorrectStatus = 0; toUpdate.Answer = checkedOption; });
+                    db.SaveChanges();
                     db.CandidateResult.Where(s => s.Email == email && s.TestCode == examCode).ToList().ForEach(data => data.TotalScore = updatedScore);
                     db.SaveChanges();
 
@@ -98,7 +99,7 @@ namespace Examportal.Handlers
             Boolean status;
             if (existingAnswer == null)
             {
-                answerDetails = AnswerDetailsObject(email, value.Code,value.QId, 0,checkedOption);
+                answerDetails = AnswerDetailsObject(email, value.Code, value.QId, 0, checkedOption);
                 resultDetails = ResultDetailsObject(0, email, value.Code, 0);
                 db.CandidateAnswer.Add(answerDetails);
                 db.CandidateResult.Add(resultDetails);
@@ -110,7 +111,7 @@ namespace Examportal.Handlers
                 status = CheckExistingWrongOption(checkedOption, value.QId, value.Code, email, updatedScore);
                 if (!status)
                 {
-                    answerDetails = AnswerDetailsObject(email, value.Code, value.QId, 0,checkedOption);
+                    answerDetails = AnswerDetailsObject(email, value.Code, value.QId, 0, checkedOption);
                     db.CandidateAnswer.Add(answerDetails);
                     db.SaveChanges();
                 }
@@ -118,7 +119,7 @@ namespace Examportal.Handlers
 
         }
 
-        public CandidateAnswer AnswerDetailsObject(string email,string examCode, String QId, byte correctStatus,string checkedOption)
+        public CandidateAnswer AnswerDetailsObject(string email, string examCode, string QId, byte correctStatus, string checkedOption)
         {
             var answerDetails = new CandidateAnswer()
             {
@@ -166,11 +167,14 @@ namespace Examportal.Handlers
                         db.SaveChanges();
                     }
                 }
-                if (allQuestions.Count == savedQuestions.Count)
-                {
-                    db.CandidateResult.Where(s => s.Email == email["Email"] && s.TestCode == value.code).ToList().ForEach(x=> x.SubmitExam = 1);
-                    return;
-                }
+                db.CandidateResult.Where(s => s.Email == email["Email"] && s.TestCode == value.code).ToList().ForEach(x => x.SubmitExam = 1);
+                db.SaveChanges();
+                //if (allQuestions.Count == savedQuestions.Count)
+                //{
+                //    db.CandidateResult.Where(s => s.Email == email["Email"] && s.TestCode == value.code).ToList().ForEach(x=> x.SubmitExam = 1);
+                //    db.SaveChanges();
+                //    return;
+                //}
             }
             else
             {
@@ -181,10 +185,11 @@ namespace Examportal.Handlers
                 {
                     String id = allQuestions[i].Id.ToString();
                     CandidateAnswer answerDetails = AnswerDetailsObject(email["Email"], value.code, id, 0, null);
+                    db.CandidateResult.Where(s => s.Email == email["Email"] && s.TestCode == value.code).ToList().ForEach(x => x.SubmitExam = 1);
                     db.CandidateAnswer.Add(answerDetails);
                     db.SaveChanges();
                 }
-            } 
+            }
         }
 
         public ExamDetails CheckAccessKey(ExamDetails value)

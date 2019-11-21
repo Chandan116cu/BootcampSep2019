@@ -1,7 +1,7 @@
 $(document).on('click', '#loginButton', function() {
         let email = $('#inputEmail').val()
         let password = $('#inputPassword').val()
-        $.ajax('http://localhost:'+localStorage.getItem('server-port')+'/login', {
+        $.ajax("http://localhost:"+localStorage.getItem('server-port')+'/login', {
             type: 'POST',
             dataType: 'JSON',
             contentType: "application/json;charset=utf-8",
@@ -17,7 +17,7 @@ $(document).on('click', '#loginButton', function() {
             success: function(data) {
                 localStorage.setItem('token', data.token)
                 if (data.accountType == "Examiner")
-                    $(location).attr('href', '../../exminer/views/examiner.html')
+                    $(location).attr('href', '../../examiner/views/examiner.html')
                 else if (data.accountType == "Student")
                     $(location).attr('href', './accessKey.html')
                 else {

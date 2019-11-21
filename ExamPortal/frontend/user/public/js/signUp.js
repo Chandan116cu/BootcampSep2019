@@ -1,4 +1,92 @@
+
+
 $(document).ready(function () {
+    $("#firstName").on("keyup", (event) => {
+
+        console.log(event.target.value);
+        let regex1 = /^[a-zA-Z ]{3,30}$/;
+
+        if (regex1.test($("#firstName").val()) == true) {
+
+            $('#view_Invalid1').hide()
+            $('#view_Valid1').show()
+        }
+        else {
+            $('#view_Valid1').hide()
+            $('#view_Invalid1').show()
+        }
+    })
+    $("#lastName").on("keyup", (event) => {
+        console.log(event.target.value);
+
+        let regex1 = /^[a-zA-Z ]{2,30}$/;
+        if (regex1.test($("#lastName").val()) == true) {
+            $('#view_Invalid2').hide()
+            $('#view_Valid2').show()
+        }
+        else {
+            $('#view_Valid2').hide()
+            $('#view_Invalid2').show()
+        }
+    })
+    $("#inputEmail").on("keyup", (event) => {
+        console.log(event.target.value);
+        let regex1 = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
+
+        if (regex1.test($("#inputEmail").val()) == true) {
+            $('#view_Invalid3').hide()
+            $('#view_Valid3').show()
+        }
+        else {
+            $('#view_Valid3').hide()
+            $('#view_Invalid3').show()
+        }
+    })
+    $("#phoneNumber").on("keyup", (event) => {
+        console.log(event.target.value);
+        let regex1 = /^[5-9]\d{9}$/;
+
+        if (regex1.test($("#phoneNumber").val()) == true) {
+            $('#view_Invalid4').hide()
+            $('#view_Valid4').show()
+        }
+        else {
+            $('#view_Valid4').hide()
+            $('#view_Invalid4').show()
+        }
+    })
+    $("#inputPassword").on("keyup", (event) => {
+        console.log(event.target.value);
+        let regex1 = /(?=.{6,})/;
+
+        if (regex1.test($("#inputPassword").val()) == true) {
+            $('#view_Invalid5').hide()
+            $('#view_Valid5').show()
+        }
+        else {
+            $('#view_Valid5').hide()
+            $('#view_Invalid5').show()
+        }
+
+
+
+    })
+    $("#cnfPassword").on("keyup", (event) => {
+        console.log(event.target.value);
+        let regex1 = $("#inputPassword").val()
+        var pattern = new RegExp($("#cnfPassword").val())
+        var result = pattern.test(regex1)
+
+        if (result == true) {
+            $('#view_Invalid5').hide()
+            $('#view_Valid5').show()
+        }
+        else {
+            $('#view_Valid5').hide()
+            $('#view_Invalid5').show()
+        }
+    })
+
     $("#signUpSubmit").click(function validate() {
         var firstName = $("#firstName").val()
         var lastName = $("#lastName").val()
@@ -7,48 +95,37 @@ $(document).ready(function () {
         var Password = $("#inputPassword").val()
         confirmPassword = $("#cnfPassword").val()
         var accountType = "Student"
+        if ($("#firstName").val().length == 0) {
+            $('#view_Invalid1').show()
 
+        }
+        if ($("#lastName").val().length == 0) {
+            $('#view_Invalid2').show()
 
-        if (firstName == "") {
-            return alert("Please enter First Name")
         }
-        var regex = /^[a-zA-Z ]{2,30}$/
-        if (regex.test(firstName) === false) {
-            return alert("Please enter a valid first name");
+        if ($("#inputEmail").val().length == 0) {
+            $('#view_Invalid3').show()
         }
-
-        if (lastName === "") {
-            return alert("Please enter your last name");
+        if ($("#phoneNumber").val().length == 0) {
+            $('#view_Invalid4').show()
         }
-
-        var regex = /^[a-zA-Z ]{2,30}$/
-        if (regex.test(lastName) === false) {
-            return alert("Please enter a valid last name");
+        if ($("#inputPassword").val().length == 0) {
+            $('#view_Invalid5').show()
         }
-
-        if(Email == ""){
-            return alert("Please enter your emailId")
+        if ($("#cnfPassword").val().length == 0) {
+            $('#view_Invalid6').show()
         }
-
-        
-        if (PhoneNumber == "") {
-            return alert("Please enter your mobile number");
+        if ($("#inputPassword").val() != $("#cnfPassword").val()) {
+            return alert("Passwords Dont match")
         }
-        var regex = /^\d{10}$/
-        if (regex.test(PhoneNumber) === false) {
-            return alert("Please enter a valid 10 digit mobile number")
+        if (lastName == "") {
+            name = firstName;
         }
-        if(Password == ""){
-            return alert("Password cannot be empty")
-        }
-        if(Password.length < 6 ){
-            return alert("Please enter a minimum of 6 digits password")
+        else{
+            name = firstName + " " + lastName;
         }
 
-        if (Password != confirmPassword) {
-            return alert("Confirm Password does not match")
-        }
-        name = firstName + " " + lastName;
+       
         $.ajax("http://localhost:"+localStorage.getItem('server-port')+"/signUp", {
             type: "POST",
             dataType: "json",
@@ -72,7 +149,6 @@ $(document).ready(function () {
             error: function (error) {
                 $('.spinner').hide()
                 alert("User already Existed")
-                console.log(error);
             }
         })
     })

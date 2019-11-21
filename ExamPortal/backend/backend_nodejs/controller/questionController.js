@@ -134,7 +134,7 @@ const saveAllQuestions = async(req,res)=>{
 }
 
 const getExamTime = async(req,res)=>{
-    const examData = await examDetail.findOne({examCode:req.headers.examcode}).select({examStartTime:1})
+    const examData = await examDetail.findOne({examCode:req.headers.examcode})
     const submitStatus = await test.findOne({$and :[{candidateId:req.headers.id},{testCode:req.headers.examcode}]}).select({submitExam:1})
     if(submitStatus === null){
         res.status(200).send({examData,submitStatus:false})
@@ -148,7 +148,7 @@ const getExamTime = async(req,res)=>{
 const questions = async(req, res) => {
     try {
         let questionInformation = new questionDetail(req.body)
-        await questionInformation.save()
+        await questionInformation.save();
         res.status(200).send({ msg: 'question saved successful' })
     } catch (error) {
         res.send({ error })

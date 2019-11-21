@@ -92,7 +92,17 @@ label {
 }
 
 .mod {
+    display: none;
     position: absolute;
-    top: 35%;
-    left: 47%;
+    top: 40%;
+    left: 45%;
+}
+.cg{
+    animation: rotate 1.2s infinite;
+}
+@keyframes rotate{
+
+ 0%   {transform: rotateY(0deg);}
+ 50%{transform: rotateY(180deg);}
+ 100%{transform: rotateY(360deg);}
 }

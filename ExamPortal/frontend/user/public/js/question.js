@@ -6,7 +6,7 @@ function loadQuestions(data, startTime, duration, examName) {
     $('#options').empty()
     const op = document.querySelector('#options')
     if (data[0].questionImage !== null) {
-        imageURL = "../../exminer/public" + data[0].questionImage.substring(2, data[0].questionImage.length)
+        imageURL = data[0].questionImage.substring(2, data[0].questionImage.length)
         imageStatus = true
     } else imageStatus = false
 
@@ -104,7 +104,7 @@ $(document).ready(function() {
     $('#nextQuestion').attr('value', 0)
     $('#previousQuestion').attr({ 'value': 0, 'disabled': true })
     
-    $.ajax('http://localhost:'+localStorage.getItem('server-port')+'/question', {
+    $.ajax("http://localhost:"+localStorage.getItem('server-port')+'/question', {
         type: 'GET',
         dataType: 'JSON',
         contentType: "application/json;charset=utf-8",
@@ -149,7 +149,7 @@ $(document).on('click', '#submitAnswer', function() {
         qId: questionId
     }
     console.log(dataToSend)
-    $.ajax('http://localhost:'+localStorage.getItem('server-port')+'/question', {
+    $.ajax("http://localhost:"+localStorage.getItem('server-port')+'/question', {
         type: 'POST',
         dataType: 'JSON',
         contentType: "application/json;charset=utf-8",
@@ -173,7 +173,7 @@ $(document).on('click', '#nextQuestion', function() {
     if ($('#nextQuestion').attr('value') != 0) {
         $('#previousQuestion').removeAttr("disabled");
     }
-    $.ajax('http://localhost:'+localStorage.getItem('server-port')+'/question', {
+    $.ajax("http://localhost:"+localStorage.getItem('server-port')+'/question', {
         type: 'GET',
         dataType: 'JSON',
         contentType: "application/json;charset=utf-8",
@@ -204,7 +204,7 @@ $(document).on('click', '#previousQuestion', function() {
     if (pageNumber == 0) {
         $('#previousQuestion').attr({ 'value': 0, 'disabled': true })
     }
-    $.ajax('http://localhost:'+localStorage.getItem('server-port')+'/question', {
+    $.ajax("http://localhost:"+localStorage.getItem('server-port')+'/question', {
         type: 'GET',
         dataType: 'JSON',
         headers: {
@@ -231,7 +231,7 @@ $(document).on('click', '#modalEndTest', function() {
     dataToSend = {
         code: localStorage.getItem("examCode")
     }
-    $.ajax('http://localhost:'+localStorage.getItem('server-port')+'/exam/endTest', {
+    $.ajax("http://localhost:"+localStorage.getItem('server-port')+'/exam/endTest', {
         type: 'POST',
         dataType: 'JSON',
         contentType: "application/json;charset=utf-8",
@@ -270,7 +270,7 @@ $(document).on('click', "input", function() {
 
 $(document).on('click', '.circle', function() {
     let upcomingPage = parseInt($(this).children().html()) - 1
-    $.ajax('http://localhost:'+localStorage.getItem('server-port')+'/question', {
+    $.ajax("http://localhost:"+localStorage.getItem('server-port')+'/question', {
         type: 'GET',
         dataType: 'JSON',
         headers: {

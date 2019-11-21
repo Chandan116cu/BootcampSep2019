@@ -1,78 +1,217 @@
 ﻿using System.Linq;
-using System;
-using System.IO;
 using Examportal.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Examportal.Auth;
-using System.Net;
-using Microsoft.Net.Http.Headers;
-using System.Threading.Tasks;
-using OfficeOpenXml;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.AspNetCore.Hosting;
-using System.Configuration;
-
 using Examportal.Custom_Models;
-
+using System.Collections.Generic;
 using Examportal.Handlers;
 using System.Web;
-
-
+using System;
+using System.IO;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
+using OfficeOpenXml;
+using System.Text;
+using System.Text.RegularExpressions;
+using Microsoft.Extensions.Configuration;
 
 namespace Examportal.Controllers
 {
-
     [ApiController]
     [Route("/exam")]
     public class ExamController : ControllerBase
     {
+        IConfiguration configuration;
+        public ExamController(IConfiguration configuration)
+        {
+            this.configuration = configuration;
+        }
         ExamportalContext db = new ExamportalContext();
-
-        [Route("accessKey")]
-        [HttpPost]
-        public IActionResult CheckAccessKey([FromBody] ExamDetails value)
+        [Authorize, HttpDelete,Route("/exam/question/{id}")]
+        
+        public IActionResult RemoveQuestions(int id)
         {
-
-
-            QuestionHandler qh = new QuestionHandler();
-            var existingExam = qh.CheckAccessKey(value);
-
-            
-            if (existingExam != null)
+            QuestionOperation question = new QuestionOperation();
+            if(question.RemoveQuestion(id))
             {
-                return Ok(true);
+                return Ok(new {flag=true , msg = "deletion successfull", status = 200, });
             }
-            else
+            return BadRequest(new { flag = false, msg = "data not found", status = 404 });
+        }
+
+        [Authorize,HttpGet,Route("/exam/{id}/question")]
+        
+        public IActionResult ViewQuestions(String id)
+        {
+            id = HttpUtility.UrlDecode(id);
+            QuestionOperation question = new QuestionOperation();
+            var data = question.ViewQuestion(id);
+                if ( data != null )
+                    return Ok(data);
+                else
+                return BadRequest(new { msg = "Not Found",status = 404 });
+        }
+
+        [Authorize,HttpGet,Route("/exam/question/{id}")]    
+        public IActionResult EditviewQuestions(int id)
+        {
+            QuestionOperation question = new QuestionOperation();
+            ViewCustomModel data = question.EditViewQuestion(id);
+            if (data != null)
+            return Ok( data);
+            return BadRequest(new { msg = "data not found", status = 404 });
+        }
+        //update question
+        [Authorize,HttpPatch,Route("/exam/question/{id}")]
+        
+        public IActionResult editQuestions(int id)
+        {
+            try
             {
-                return BadRequest();
+                var req = HttpContext.Request.Form;
+
+                string currentpath = Directory.GetCurrentDirectory().ToString();
+                string parent = Directory.GetParent(currentpath).ToString();
+                string parentdirectory = Directory.GetParent(parent).ToString();
+                string root = Directory.GetParent(parentdirectory).ToString();
+                string dest = Path.Combine(root, "assets");
+
+                var file = req.Files != null && HttpContext.Request.Form.Files.Count() > 0 ? req.Files[0] : null;
+
+                String ImageURL = null;
+                if (file != null)
+                {
+                    if (Directory.Exists(dest))
+                    {
+
+                        var filename = ContentDispositionHeaderValue
+                                          .Parse(file.ContentDisposition)
+                                          .FileName
+                                          .Trim('"');
+                       
+                        String date = DateTime.Now.ToString();
+
+                        date = Regex.Replace(date, @"s", "");
+
+                        filename = dest + "\\" + filename;
+
+                        using (FileStream fs = System.IO.File.Create(filename))
+                        {
+                            file.CopyTo(fs);
+                            fs.Flush();
+                        }
+
+                        ImageURL = "../public/assets/" + file.FileName;
+
+                    }
+                }
+                var obj = db.Questions.FirstOrDefault(e => e.Id == id);
+
+                obj.Answer = req["answer"];
+
+                obj.QuestionText = req["questionText"]; obj.Option1 = req["option1"]; obj.Option2 = req["option2"];
+
+                obj.Option3 = req["option3"]; obj.Option4 = req["option4"];
+
+                obj.Weightage = Convert.ToInt32(req["weightage"]); obj.AnswerType = req["answerType"];
+
+                obj.ModifiedDate = DateTime.Now;
+
+                obj.QuestionImage = ImageURL != null ? ImageURL : obj.QuestionImage;
+
+                obj.ModifiedBy = obj.CreatedBy; obj.ExamCode = obj.ExamCode;
+
+                obj.CreatedBy = obj.CreatedBy; obj.CreatedDate = obj.CreatedDate;
+                   
+                db.SaveChanges();
+                return Ok(new { msg ="update successfull", status = 200});
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { error = e });
             }
         }
 
-        [Authorize]
+        [Authorize,HttpPost, Route("/exam/question")]
+       //upload questions
+        public IActionResult UploadQuestion()
+        {            
+            try
+            {
+                var req = HttpContext.Request.Form;
 
-        [Route("exam/accessKey")]
-        [HttpGet]
+                string currentpath = Directory.GetCurrentDirectory().ToString();
+                string parent = Directory.GetParent(currentpath).ToString();
+                string parentdirectory = Directory.GetParent(parent).ToString();
+                string root = Directory.GetParent(parentdirectory).ToString();
+                string dest = Path.Combine(root, "assets");
 
-        public IActionResult GetExamTime()
-        {
-            Authentication auth = new Authentication();
-            var header = auth.getAllClaims(HttpContext);
-            string examcode = HttpContext.Request.Headers["examCode"];
+                var file = HttpContext.Request.Form.Files != null && HttpContext.Request.Form.Files.Count() > 0 ? HttpContext.Request.Form.Files[0] : null;
 
-            var examData = db.ExamDetails.FirstOrDefault(s => s.ExamCode == examcode);
+                String imageURL = null;
+                if (file != null)
+                {
+                    if (Directory.Exists(dest))
+                    {
 
-            return Ok(new { examData = examData, submitStatus = false });
+                        var filename = ContentDispositionHeaderValue
+                                          .Parse(file.ContentDisposition)
+                                          .FileName
+                                          .Trim('"');
+                        String date = DateTime.Now.Ticks.ToString();
+                        String imageName = date + file.FileName;
+                        filename = dest + "\\" + date + filename;
 
+                        using (FileStream fs = System.IO.File.Create(filename))
+                        {
+                            file.CopyTo(fs);
+                            fs.Flush();
+                        }
+                   
+                        imageURL = "../../../assets/" + imageName;
+
+                    }
+                }
+                Dictionary<string, string> email = new Dictionary<string, string>();
+
+                Authentication auth = new Authentication();
+                email = auth.getAllClaims(HttpContext);
+
+                Questions obj = new Questions();
+
+                obj.Answer = req["answer"];
+
+                obj.QuestionText = req["questionText"];
+                obj.Option1 = req["option1"];
+                obj.Option2 = req["option2"];
+
+                obj.Option3 = req["option3"];
+                obj.Option4 = req["option4"];
+                obj.ExamCode = req["examCode"];
+
+                obj.Weightage = Convert.ToInt32(req["weightage"]);
+                obj.QuestionImage = imageURL;
+                obj.AnswerType = req["answerType"];
+
+                obj.CreatedDate = DateTime.Now;
+
+                obj.CreatedBy = db.Users.FirstOrDefault(u => u.Email == email["Email"]).Name;
+
+                db.Questions.Add(obj);
+                db.SaveChanges();
+
+                return Ok(new { msg = "question saved successfully" });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { error = e });
+            }
         }
 
-
-
-        [Route("/exam/questions/uploadExcel")]
-        [HttpPost]
-
+        [Authorize,HttpPost, Route("/exam/questions/uploadExcel")]
+        
         public async Task createDirectoryAsync()
         {
 
@@ -84,10 +223,14 @@ namespace Examportal.Controllers
             try
             {
                 // Determine whether the directory exists.
-                if (Directory.Exists(path))
+                DirectoryInfo di = Directory.CreateDirectory(path);
+
+                Console.WriteLine("The directory was created successfully at {0}.", Directory.GetCreationTime(path));
+                //if (Directory.Exists(path))
                 {
 
                     var filePayload = HttpContext.Request.Form.Files[0];
+                    var examcode = HttpContext.Request.Form["examCode"];
 
                     if (filePayload.Length > 0)
                         using (var fileStream = new FileStream(Path.Combine(path, filePayload.FileName), FileMode.Create))
@@ -146,7 +289,8 @@ namespace Examportal.Controllers
                                 {
                                     questions.Option3 = result;
                                 }
-                                if (col == 5) {
+                                if (col == 5)
+                                {
                                     questions.Option4 = result;
                                 }
 
@@ -166,6 +310,8 @@ namespace Examportal.Controllers
                                 {
                                     questions.AnswerType = result;
                                 }
+                                questions.ExamCode = examcode;
+                                questions.CreatedDate = DateTime.Now;
                                 rawText.Remove(0, rawText.Length);
                             }
                             result = result.Trim();
@@ -177,14 +323,7 @@ namespace Examportal.Controllers
                         }
                     }
                     return;
-
-
                 }
-
-                // create the directory.
-                DirectoryInfo di = Directory.CreateDirectory(path);
-
-                Console.WriteLine("The directory was created successfully at {0}.", Directory.GetCreationTime(path));
             }
             catch (Exception e)
             {
@@ -192,41 +331,5 @@ namespace Examportal.Controllers
             }
 
         }
-
-        //[Authorize]
-        [Route("endTest")]
-        [HttpPost]
-        public IActionResult SaveAllQuestions([FromBody] SubmitAnswerCustomModel value)
-        {
-            Dictionary<string, string> email = new Dictionary<string, string>();
-            Authentication auth = new Authentication();
-            QuestionHandler qh = new QuestionHandler();
-
-            email = auth.getAllClaims(HttpContext);
-            qh.submitAllQuestions(value, email);
-
-            return Ok();
-        }
-        //[Authorize]
-        [Route("/exam/question/{id}")]
-        [HttpDelete]
-        public IActionResult removeQuestions(int id)
-        {
-            try
-            {
-                db.Questions.Remove(db.Questions.FirstOrDefault(e => e.Id == id));
-                db.SaveChanges();
-                return Ok();
-            }
-
-
-            catch (Exception e)
-            {
-                return BadRequest(new { error = e });
-            }
-        }
-
     }
 }
-
-    

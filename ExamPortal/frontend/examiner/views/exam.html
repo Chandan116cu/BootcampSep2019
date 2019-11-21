@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Show Test</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../public/css/exam.css">
+    <link rel="stylesheet" href="../public/css/examdetails.css">
+    <link rel="icon" href="https://www.cygrp.com/wp-content/uploads/2019/06/cybergroup-site-icon.png" type="image/x-icon">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.1.0/mustache.js"></script>
+</head>
+
+<body onload="showName()">
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background-color: black;">
+        <img src="../../user/public/assets/cybergrouplogo.png" class="logo" style="width: 12%;">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto ">
+
+                <li class="nav-item">
+                    <a class="nav-link" onclick="location.href='./examiner.html'">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="location.href='contactUs.html'">Contact</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" onclick="location.href='exam.html'">Test Collections</a>
+                </li>
+            </ul>
+            <span id="span">Welcome</span>
+            <form class="form-inline my-2 my-lg-0">
+                <!-- <span id="span">Welcome &nbsp; </span> -->
+                <button class="btn btn-outline-danger my-2 my-sm-0" type="button" onclick="logout()">Logout</button>
+            </form>
+        </div>
+    </nav>
+    <div class="container-fluid">
+        <div class="row" id="examId">
+            <div class="col-md-12 exam-detail">
+                <h2>Exam Details</h2>
+                <div class="row heading">
+                    <div class="col-md-2">
+                        <h5>Exam Name</h5>
+                    </div>
+                    <div class="col-md-2">
+                        <h5>Exam Code</h5>
+                    </div>
+                    <div class="col-md-2">
+                        <h5>Exam Duration</h5>
+                    </div>
+                    <div class="col-md-2">
+                        <h5>Exam Date </h5>
+                    </div>
+                    <div class="col-md-1"></div>
+                    <div class="col-md-1"></div>
+                    <div class="col-md-1"></div>
+                    <div class="col-md-1"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- append view question template -->
+    <div class="container question-div-pos" id="mainDiv">
+        <div class="row qrow">
+            <div class="col-md-2" id="question-Index"></div>
+            <div class="col-md-10" id="question-Display"></div>
+        </div>
+    </div>
+    <!-- append edit exam form template here-->
+    <div class="container-fluid" id="display-form">
+    </div>
+    <!-- display exam detail template -->
+    <script id="display-exam-detail" type="text/html">
+        <div class="row content" id="{{_id}}">
+            <div class="col-md-2">
+                <p>{{examName}}</p>
+            </div>
+            <div class="col-md-2">
+                <p>{{examCode}}</p>
+            </div>
+            <div class="col-md-2">
+                <p>{{examDuration}}</p>
+            </div>
+            <div class="col-md-2">
+                <p>{{examStartTime}}</p>
+            </div>
+            <div class="col-md-1">
+                <button class="btn btn-outline-success" id="{{examCode}}" onclick="addQuestion(this.id)">Add</button>
+            </div>
+            <div class="col-md-1">
+                <button class="btn btn-outline-info" id="view{{index}}" onclick="showQuestion(this.id)">View</button>
+            </div>
+            <div class="col-md-1">
+                <button class="btn btn-outline-primary" id="edit{{index}}" onclick="editExamDetail(this.id)">Edit</button>
+            </div>
+            <div class="col-md-1">
+                <button type="button" id="delete{{index}}" class="btn btn-outline-danger" data-toggle="modal" data-target="#exampleModal" onclick="setId(this.id)">Delete</button>
+                <!-- <button class="btn btn-outline-danger" id="delete{{index}}" onclick="deleteExam(this.id)">Delete</button> -->
+            </div>
+        </div>
+    </script>
+    <!-- edit exam detail template -->
+    <script id="edit-exam-detail" type="text/html">
+        <div class="form1">
+            <form class="addExamDetail">
+                <div class="form-group">
+                    <label for="addExamName">Exam Name</label>
+                    <input type="text" class="form-control" id="addExamName" aria-describedby="emailHelp" placeholder="Enter Exam Name" value="{{examName}}">
+                </div>
+                <div class="form-group">
+                    <label for="addExamCode">Exam Code</label>
+                    <input type="text" class="form-control" id="addExamCode" placeholder="Enter Exam Code" value="{{examCode}}" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="addExamDuration">Exam Duration</label>
+                    <input type="text" class="form-control" id="addExamDuration" aria-describedby="emailHelp" placeholder="Enter Exam Duration" value="{{examDuration}}">
+                </div>
+                <div class="form-group">
+                    <label for="addExamDate">Exam Date and Time</label>
+                    <input type="text" class="form-control" id="addExamDate" aria-describedby="emailHelp" placeholder="Enter Exam Date" value="{{examStartTime}}">
+                </div>
+                <!-- <div class="form-group">
+                    <label for="addExamInstruction">Exam Instruction</label>
+                    <textarea class="form-control rounded-0" id="addExamInstruction" rows="5" placeholder="Enter Exam Instruction">{{instructions}}</textarea>
+                </div> -->
+                <button type="button" class="btn btn-primary" id="{{_id}}" onclick="updateExam(this.id)">Submit</button>
+            </form>
+        </div>
+    </script>
+    <script src="../public/js/showExam.js"></script>
+    <script type="text/javascript" src="../public/js/examiner.js"></script>
+    <!-- Modal to confirm delete exam -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog " role="document">
+            <div class="modal-content confirm-box">
+                <div class="modal-header">
+                    <!-- <h5 class="modal-title" id="exampleModalLabel">Modal title</h5> -->
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="modalBody">
+                    <h4>You delete this item?</4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-info" data-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-outline-success" id="del" onclick="deleteExam(this.id)">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

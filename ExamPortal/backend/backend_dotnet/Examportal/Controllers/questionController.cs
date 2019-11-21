@@ -9,6 +9,7 @@ using Examportal.Custom_Models;
 using Examportal.Auth;
 using Examportal.Handlers;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace Examportal.Controllers
 {
@@ -68,7 +69,17 @@ namespace Examportal.Controllers
             {
                 qh.SaveIncorrectOption(checkAnswer, existingAnswer, email["Email"], value, joinValue);
             }
-            return Ok();
+            return Ok(new { msg="data saved"});
+        }
+
+        [Route("/myRoute")]
+        [HttpGet]
+        public IActionResult Get()
+        {
+            //var data = db.CandidateResult.Join(db.CandidateAnswer, a => a.Email, b => b.Email, (a, b) => new { data1 = a, data2 = b }).Where(c => CandidateAnswers.Email == "himanshuchauhan@gmail.com");
+            //var data = db.CandidateResult.Join(db.CandidateAnswer, str1 => str1.Email, str2=> str2.Email,(str1,str2)=>str1);
+            var data = db.CandidateResult.Include(answer => answer.CandidateAnswer).ToList();
+            return Ok(data);
         }
 
     }

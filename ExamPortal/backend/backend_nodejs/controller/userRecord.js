@@ -119,7 +119,7 @@ const userRecord = async(req, res) => {
             var myPlaintesxtPassword = userInfo.password;
             var salt = bcrypt.genSaltSync(10);
             var hash = bcrypt.hashSync(myPlaintesxtPassword, salt)
-            var role='Student'
+            var role='Examiner'
             userInfo.accountType=role
             userInfo.password = hash; {
                 user.create(userInfo)

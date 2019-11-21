@@ -1,6 +1,6 @@
-
-.vs/
-
+*.vs/
+*.vs/Examportal/
+upstream/development
 *.swp
 *.*~
 project.lock.json
@@ -37,4 +37,5 @@ msbuild.err
 msbuild.wrn
 
 # Visual Studio 2015
+.vs/
 

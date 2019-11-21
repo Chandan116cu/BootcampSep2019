@@ -5,16 +5,11 @@
     <title>Cyber Group - Sign Up</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <link rel="stylesheet" type="text/css" href="../public/css/signUp.css">
-    <script src="../public/js/signUp.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    
     <!-- cybergroup logo on top -->
     <link rel="icon" href="https://www.cygrp.com/wp-content/uploads/2019/06/cybergroup-site-icon.png" type="image/x-icon">
-    <link rel="stylesheet" href="../../public/css/loader.css">
-
 </head>
 
 <body>
@@ -38,7 +33,7 @@
         <br>
         <div class="container flex" style="margin-top: 50px;">
             <div class="flex-1">
-                <form class="was-validated modal-content">
+                <form class="modal-content">
                         <!-- was-validated modal-content -->
                     <h1>Please Sign Up</h1>
                     <p>Please fill in this form to create an account.</p>
@@ -46,43 +41,63 @@
                     <div class="form-group">
                         <label for="firstName">First Name</label>
                         <input type="text" id="firstName" class="form-control" placeholder="Enter first name" required autofocus>
-                        <div class="valid-feedback">
+                        <div class="valid-feedback" id="view_Valid1" style="display: none;" >
                                 Looks good!
-                              </div>
+                        </div>
+                        <div class = "invalid-feedback" id="view_Invalid1" style="display: none;">
+                            Please Enter a valid name
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="lastName">Last Name</label>
-                        <input type="text" id="lastName" class="form-control" placeholder="Enter last name" required autofocus>
-                        <div class="valid-feedback">
-                                Looks good!
-                              </div>
+                        <input type="text" id="lastName" class="form-control" placeholder="Enter last name" autofocus>
+                        <div class="valid-feedback" id="view_Valid2" style="display: none;" >
+                            Looks good!
+                    </div>
+                    <div class = "invalid-feedback" id="view_Invalid2" style="display: none;">
+                        Please Enter a valid name
+                    </div>
                     </div>
                     <div class="form-group">
                         
                         <label for="email">Email</label>
                         <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
-                        <div class="invalid-feedback">
-                                Please choose a username.
-                              </div>
-                              <div class="valid-feedback">
-                                    Looks good!
-                                  </div>
+                              <div class="valid-feedback" id="view_Valid3" style="display: none;" >
+                                Looks good!
+                        </div>
+                        <div class = "invalid-feedback" id="view_Invalid3" style="display: none;">
+                            Please Enter a valid email Id
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="phonenumber">Phone Number</label>
                         <input type="text" id="phoneNumber" class="form-control" placeholder="Enter phone Number" required>
+                        <div class="valid-feedback" id="view_Valid4" style="display: none;" >
+                            Looks good!
+                    </div>
+                    <div class = "invalid-feedback" id="view_Invalid4" style="display: none;">
+                        Please Enter a valid 10 digit mobile number
+                    </div>
                     </div>
                     <div class="form-group">
-                        <label for="password">Password(Minimum length 6)</label>
-                        <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
-                        <div class="invalid-feedback">
-                                Please provide a valid password.
-                              </div>
+                        <label for="password">Password</label>
+                        <input type="password" id="inputPassword" class="form-control hover" placeholder="Password" required>
+                        <div class="valid-feedback" id="view_Valid5" style="display: none;" >
+                            Looks good!
+                    </div>
+                    <div class = "invalid-feedback" id="view_Invalid5" style="display: none;">
+                        Please Enter a minimum 6 digits password
+                    </div>
                     </div>
                     <div class="form-group">
                         <label for="password">Confirm Password</label>
                         <input type="password" id="cnfPassword" class="form-control" placeholder="Confirm Password" required>
-                        <div class="valid-feedback">Valid.</div>
+                        <div class="valid-feedback" id="view_Valid6" style="display: none;" >
+                            Looks good!
+                    </div>
+                    <div class = "invalid-feedback" id="view_Invalid6" style="display: none;">
+                        Confirm password does not match
+                    </div>
                     </div>
                     <div class="form-group">
                         <label for="account type">Account Type</label>
@@ -101,10 +116,16 @@
     <!-- for displaying loader -->
     <div class="mod">
         <div class="spinner">
-            <div class="cube1"></div>
-            <div class="cube2"></div>
+            <div class="loader">
+                <img src="https://www.cygrp.com/wp-content/uploads/2019/06/cybergroup-site-icon.png" class="cg">
+            </div>
         </div>
     </div>
 </body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="../public/js/signUp.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
 </html>

@@ -20,7 +20,6 @@ namespace Examportal.Models
         public virtual DbSet<ExamDetails> ExamDetails { get; set; }
         public virtual DbSet<Questions> Questions { get; set; }
         public virtual DbSet<Users> Users { get; set; }
-      
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -44,8 +43,7 @@ namespace Examportal.Models
                 entity.Property(e => e.CandidateId).HasColumnName("candidateId");
 
                 entity.Property(e => e.Answer)
-                    .HasColumnName("answer")
-                    .HasMaxLength(20)
+                    .HasMaxLength(100)
                     .IsUnicode(false);
 
                 entity.Property(e => e.CompletionTime)
@@ -85,35 +83,35 @@ namespace Examportal.Models
                     .HasMaxLength(20)
                     .IsUnicode(false);
 
+                entity.HasOne(d => d.EmailNavigation)
+                    .WithMany(p => p.CandidateAnswer)
+                    .HasForeignKey(d => d.Email)
+                    .HasConstraintName("FK__candidate__email__1EA48E88");
+
                 entity.HasOne(d => d.IdNavigation)
                     .WithMany(p => p.CandidateAnswer)
                     .HasForeignKey(d => d.Id)
-                    .HasConstraintName("FK__candidateAn___id__06CD04F7");
-
-                entity.HasOne(d => d.TestCodeNavigation)
-                    .WithMany(p => p.CandidateAnswer)
-                    .HasForeignKey(d => d.TestCode)
-                    .HasConstraintName("FK__candidate__testC__07C12930");
+                    .HasConstraintName("FK__candidateAn___id__1F98B2C1");
             });
 
             modelBuilder.Entity<CandidateResult>(entity =>
             {
-                entity.HasKey(e => e.TestCode);
+                entity.HasKey(e => e.Email);
 
                 entity.ToTable("candidateResult");
-
-                entity.Property(e => e.TestCode)
-                    .HasColumnName("testCode")
-                    .HasMaxLength(20)
-                    .IsUnicode(false)
-                    .ValueGeneratedNever();
 
                 entity.Property(e => e.Email)
                     .HasColumnName("email")
                     .HasMaxLength(50)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .ValueGeneratedNever();
 
                 entity.Property(e => e.SubmitExam).HasColumnName("submitExam");
+
+                entity.Property(e => e.TestCode)
+                    .HasColumnName("testCode")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.TotalScore).HasColumnName("totalScore");
             });
@@ -163,10 +161,10 @@ namespace Examportal.Models
                     .HasColumnName("_id")
                     .ValueGeneratedOnAdd();
 
-               // entity.Property(e => e.ModifiedBy)
-                //    .HasColumnName("modifiedBy")
-                  //  .HasMaxLength(20)
-                   // .IsUnicode(false);
+                entity.Property(e => e.ModifiedBy)
+                    .HasColumnName("modifiedBy")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.ModifiedDate)
                     .HasColumnName("modifiedDate")

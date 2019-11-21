@@ -9,14 +9,13 @@ $(document).ready(function(){
         type:"POST",
         dataType:"json",
         contentType:"application/json",
-        
             data:JSON.stringify(
                 {
                   "email":em,
                   "password":pwd,
                 }
             ),
-            success:function(recent){ 
+            success:function(recent){
                 //console.log(recent.message);
                 if(recent.message=="Email or password is not valid")
                 {
@@ -26,14 +25,11 @@ $(document).ready(function(){
                     window.location.replace("adminHome.html")
                  }
 
-               
                 },
-            
             error:function()
             {
                 alert("Something went wrong");
             }
-            
           });
       });
   });

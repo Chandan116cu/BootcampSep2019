@@ -20,7 +20,7 @@ namespace Examportal.Models
         public string Option4 { get; set; }
         public int? Weightage { get; set; }
         public string ExamCode { get; set; }
-        public string QuestionImage { get; set; } 
+        public string QuestionImage { get; set; }
         public DateTime? CreatedDate { get; set; }
         public string CreatedBy { get; set; }
         public DateTime? ModifiedDate { get; set; }
@@ -28,6 +28,5 @@ namespace Examportal.Models
 
         public ExamDetails ExamCodeNavigation { get; set; }
         public ICollection<CandidateAnswer> CandidateAnswer { get; set; }
-        //public string Content { get; internal set; }
     }
 }
