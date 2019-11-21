@@ -1,12 +1,17 @@
+function showpasswordtext()
+{
+  var x = document.getElementById("password");
+ 
+    x.type = "text";
+}
+
 function showpassword()
 {
   var x = document.getElementById("password");
-  if (x.type === "password") {
-    x.type = "text";
-  } else {
+  
     x.type = "password";
-  }
 }
+
 function ValidateEmail(email)
 {
     var mailformat =/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/;
